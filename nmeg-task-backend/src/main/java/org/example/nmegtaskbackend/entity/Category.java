@@ -2,6 +2,7 @@ package org.example.nmegtaskbackend.entity;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "category")
@@ -19,6 +20,9 @@ public class Category {
     
     @Column(name = "valid_to")
     private LocalDateTime validTo;
+    
+    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Product> products;
     
     public Category() {}
     
@@ -58,5 +62,13 @@ public class Category {
     
     public void setValidTo(LocalDateTime validTo) {
         this.validTo = validTo;
+    }
+    
+    public List<Product> getProducts() {
+        return products;
+    }
+    
+    public void setProducts(List<Product> products) {
+        this.products = products;
     }
 }

@@ -4,12 +4,20 @@ type Query {
     activeCategories: [Category]
     categoriesValidAt(dateTime: String): [Category]
     searchCategories(name: String!): [Category]
+    products: [Product]
+    product(id: ID!): Product
+    productsByCategory(categoryId: ID!): [Product]
+    searchProductsByName(name: String!): [Product]
+    searchProductsByCategoryAndName(categoryId: ID!, name: String!): [Product]
 }
 
 type Mutation {
     createCategory(input: CategoryInput!): Category
     updateCategory(id: ID!, input: CategoryInput!): Category
     deleteCategory(id: ID!): Boolean
+    createProduct(input: ProductInput!): Product
+    updateProduct(id: ID!, input: ProductInput!): Product
+    deleteProduct(id: ID!): Boolean
 }
 
 type Category {
@@ -17,11 +25,26 @@ type Category {
     name: String
     validFrom: String
     validTo: String
+    products: [Product]
 }
 
 input CategoryInput {
     name: String!
     validFrom: String
     validTo: String
+}
+
+type Product {
+    id: ID
+    name: String
+    description: String
+    categoryId: ID
+    category: Category
+}
+
+input ProductInput {
+    name: String!
+    description: String
+    categoryId: ID!
 }
 
