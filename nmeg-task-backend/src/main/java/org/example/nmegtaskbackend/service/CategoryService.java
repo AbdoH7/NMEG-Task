@@ -2,6 +2,8 @@ package org.example.nmegtaskbackend.service;
 
 import org.example.nmegtaskbackend.dto.CategoryInput;
 import org.example.nmegtaskbackend.entity.Category;
+import org.example.nmegtaskbackend.exception.ResourceNotFoundException;
+import org.example.nmegtaskbackend.exception.ValidationException;
 import org.example.nmegtaskbackend.repository.CategoryRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,7 +27,7 @@ public class CategoryService {
         validateCategoryInput(categoryInput);
 
         if (categoryRepository.existsByName(categoryInput.getName())) {
-            throw new IllegalArgumentException("Category with name '" + categoryInput.getName() + "' already exists");
+            throw new ValidationException("Category with name '" + categoryInput.getName() + "' already exists");
         }
         
         Category category = new Category();
@@ -69,12 +71,12 @@ public class CategoryService {
         validateCategoryInput(categoryInput);
         
         Category existingCategory = categoryRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Category with id " + id + " not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Category", id));
         
         // Check if new name conflicts with existing categories (excluding current)
         if (!existingCategory.getName().equals(categoryInput.getName()) && 
             categoryRepository.existsByNameAndIdNot(categoryInput.getName(), id)) {
-            throw new IllegalArgumentException("Category with name '" + categoryInput.getName() + "' already exists");
+            throw new ValidationException("Category with name '" + categoryInput.getName() + "' already exists");
         }
         
         existingCategory.setName(categoryInput.getName());
@@ -97,13 +99,13 @@ public class CategoryService {
     // Validate category input
     private void validateCategoryInput(CategoryInput categoryInput) {
         if (categoryInput.getName() == null || categoryInput.getName().trim().isEmpty()) {
-            throw new IllegalArgumentException("Category name cannot be null or empty");
+            throw new ValidationException("Category name cannot be null or empty");
         }
 
         
         if (categoryInput.getValidFrom() != null && categoryInput.getValidTo() != null) {
             if (categoryInput.getValidFrom().isAfter(categoryInput.getValidTo())) {
-                throw new IllegalArgumentException("Valid from date cannot be after valid to date");
+                throw new ValidationException("Valid from date cannot be after valid to date");
             }
         }
     }

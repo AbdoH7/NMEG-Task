@@ -2,6 +2,8 @@ package org.example.nmegtaskbackend.service;
 
 import org.example.nmegtaskbackend.dto.ProductInput;
 import org.example.nmegtaskbackend.entity.Product;
+import org.example.nmegtaskbackend.exception.ResourceNotFoundException;
+import org.example.nmegtaskbackend.exception.ValidationException;
 import org.example.nmegtaskbackend.repository.ProductRepository;
 import org.example.nmegtaskbackend.repository.CategoryRepository;
 import org.springframework.stereotype.Service;
@@ -27,9 +29,8 @@ public class ProductService {
         validateProductInput(productInput);
 
         if (!categoryRepository.existsById(productInput.getCategoryId())) {
-            throw new IllegalArgumentException("Category with id " + productInput.getCategoryId() + " not found");
+            throw new ResourceNotFoundException("Category", productInput.getCategoryId());
         }
-
         
         Product product = new Product();
         product.setName(productInput.getName());
@@ -68,11 +69,11 @@ public class ProductService {
         validateProductInput(productInput);
         
         Product existingProduct = productRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Product with id " + id + " not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Product", id));
         
         // Check if category exists
         if (!categoryRepository.existsById(productInput.getCategoryId())) {
-            throw new IllegalArgumentException("Category with id " + productInput.getCategoryId() + " not found");
+            throw new ResourceNotFoundException("Category", productInput.getCategoryId());
         }
 
         
@@ -95,11 +96,11 @@ public class ProductService {
     // Validate product input
     private void validateProductInput(ProductInput productInput) {
         if (productInput.getName() == null || productInput.getName().trim().isEmpty()) {
-            throw new IllegalArgumentException("Product name cannot be null or empty");
+            throw new ValidationException("Product name cannot be null or empty");
         }
         
         if (productInput.getCategoryId() == null) {
-            throw new IllegalArgumentException("Category ID cannot be null");
+            throw new ValidationException("Category ID cannot be null");
         }
     }
 }
