@@ -1,0 +1,27 @@
+type Query {
+    categories: [Category]
+    category(id: ID!): Category
+    activeCategories: [Category]
+    categoriesValidAt(dateTime: String): [Category]
+    searchCategories(name: String!): [Category]
+}
+
+type Mutation {
+    createCategory(input: CategoryInput!): Category
+    updateCategory(id: ID!, input: CategoryInput!): Category
+    deleteCategory(id: ID!): Boolean
+}
+
+type Category {
+    id: ID
+    name: String
+    validFrom: String
+    validTo: String
+}
+
+input CategoryInput {
+    name: String!
+    validFrom: String
+    validTo: String
+}
+
