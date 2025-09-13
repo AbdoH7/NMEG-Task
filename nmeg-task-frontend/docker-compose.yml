@@ -1,0 +1,25 @@
+version: '3.8'
+
+services:
+  frontend:
+    build: .
+    container_name: nmeg-task-frontend
+    env_file:
+      - .env
+    volumes:
+      - .:/app
+      - node_modules:/app/node_modules
+    ports:
+      - "${FRONTEND_PORT:-3000}:3000"
+    networks:
+      - nmeg-task
+    restart: unless-stopped
+    environment:
+      - NODE_ENV=development
+
+volumes:
+  node_modules:
+
+networks:
+  nmeg-task:
+    external: true
