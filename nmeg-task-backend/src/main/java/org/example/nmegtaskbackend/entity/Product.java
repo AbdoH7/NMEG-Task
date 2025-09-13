@@ -2,6 +2,8 @@ package org.example.nmegtaskbackend.entity;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "product")
@@ -23,15 +25,21 @@ public class Product {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id", insertable = false, updatable = false)
     private Category category;
+
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OrderBy("imageOrder ASC")
+    private List<ProductImage> images = new ArrayList<>();
     
     public Product() {}
-    
-    public Product(String name, String description, Long categoryId) {
+
+    public Product(String name, Long id, String description, Long categoryId, List<ProductImage> images) {
         this.name = name;
+        this.id = id;
         this.description = description;
         this.categoryId = categoryId;
+        this.images = images;
     }
-    
+
     public Long getId() {
         return id;
     }
@@ -70,5 +78,13 @@ public class Product {
     
     public void setCategory(Category category) {
         this.category = category;
+    }
+
+    public List<ProductImage> getImages() {
+        return images;
+    }
+
+    public void setImages(List<ProductImage> images) {
+        this.images = images;
     }
 }

@@ -40,11 +40,13 @@ type Product {
     description: String
     categoryId: ID
     category: Category
+    images: [String]
 }
 
 input ProductInput {
     name: String!
     description: String
     categoryId: ID!
+    images: [String]
 }
 

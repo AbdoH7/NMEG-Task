@@ -2,14 +2,18 @@ package org.example.nmegtaskbackend.controller;
 
 import org.example.nmegtaskbackend.dto.ProductInput;
 import org.example.nmegtaskbackend.entity.Product;
+import org.example.nmegtaskbackend.entity.ProductImage;
 import org.example.nmegtaskbackend.service.ProductService;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
+import org.springframework.graphql.data.method.annotation.SchemaMapping;
 import org.springframework.stereotype.Controller;
 
+import java.util.Base64;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Controller
 public class ProductController {
@@ -58,5 +62,16 @@ public class ProductController {
     @MutationMapping
     public Boolean deleteProduct(@Argument Long id) {
         return productService.deleteProduct(id);
+    }
+    
+    @SchemaMapping(typeName = "Product", field = "images")
+    public List<String> images(Product product) {
+        if (product.getImages() == null || product.getImages().isEmpty()) {
+            return List.of();
+        }
+        
+        return product.getImages().stream()
+                .map(productImage -> Base64.getEncoder().encodeToString(productImage.getImage()))
+                .collect(Collectors.toList());
     }
 }
