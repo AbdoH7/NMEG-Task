@@ -21,6 +21,18 @@
           >
             📁 Categories
           </router-link>
+
+          <router-link
+            to="/products"
+            class="flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-colors duration-200"
+            :class="[
+              $route.name === 'products'
+                ? 'bg-blue-100 text-blue-700 border border-blue-200'
+                : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
+            ]"
+          >
+            📦 Products
+          </router-link>
         </nav>
       </div>
     </div>
